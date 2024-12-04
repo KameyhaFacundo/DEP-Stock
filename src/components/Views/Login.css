@@ -33,6 +33,7 @@ html {
 
 .input-group {
   margin-bottom: 20px;
+  position: relative;
 }
 
 .input-group label {
@@ -44,7 +45,7 @@ html {
 
 .input-group input {
   width: 100%;
-  padding: 8px 0px;
+  padding: 8px 5px;
   font-size: 16px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -56,6 +57,13 @@ html {
 .input-group input:focus {
   border-color: white;
   outline: none;
+}
+
+.input-group .eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 30px;
+  cursor: pointer;
 }
 
 button {

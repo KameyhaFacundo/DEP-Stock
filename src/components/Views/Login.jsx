@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "./Login.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Necesitas instalar react-icons
 
 const Login = ({ setUsuarioLogueado }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Control para ver/ocultar la contraseña
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,6 +43,10 @@ const Login = ({ setUsuarioLogueado }) => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
@@ -53,6 +59,7 @@ const Login = ({ setUsuarioLogueado }) => {
         </div>
         {error && <p className="error">{error}</p>}
         {successMessage && <p className="success">{successMessage}</p>}
+
         <div className="input-group">
           <label htmlFor="username">Usuario</label>
           <input
@@ -61,20 +68,27 @@ const Login = ({ setUsuarioLogueado }) => {
             name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            placeholder="Ingrese el usuario"
             required
           />
         </div>
+
         <div className="input-group">
           <label htmlFor="password">Contraseña</label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"} // Cambia entre texto o password
             id="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Ingrese la contraseña"
             required
           />
+          <span className="eye-icon py-1" onClick={togglePasswordVisibility}>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
         </div>
+
         <button type="submit">Ingresar</button>
       </form>
     </div>
