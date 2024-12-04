@@ -25,6 +25,9 @@ html {
   text-align: center;
 }
 
+.logo {
+  padding: 0px;
+}
 .logo-container img {
   max-width: 280px;
   min-height: 80px;
