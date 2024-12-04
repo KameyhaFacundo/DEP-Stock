@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "./Login.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Necesitas instalar react-icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = ({ setUsuarioLogueado }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Control para ver/ocultar la contraseña
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,11 +51,7 @@ const Login = ({ setUsuarioLogueado }) => {
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
         <div className="logo-container">
-          <img
-            src="./src/assets/img/logo.png"
-            alt="Gobierno de Tucumán"
-            className="logo"
-          />
+          <img src="./src/assets/img/logo.png" alt="Gobierno de Tucumán" />
         </div>
         {error && <p className="error">{error}</p>}
         {successMessage && <p className="success">{successMessage}</p>}
@@ -76,7 +72,7 @@ const Login = ({ setUsuarioLogueado }) => {
         <div className="input-group">
           <label htmlFor="password">Contraseña</label>
           <input
-            type={showPassword ? "text" : "password"} // Cambia entre texto o password
+            type={showPassword ? "text" : "password"}
             id="password"
             name="password"
             value={password}
