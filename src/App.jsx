@@ -25,7 +25,7 @@ function App() {
           <Route exact path='/' element={<Login usuarioLogueado={usuarioLogueado} setUsuarioLogueado={setUsuarioLogueado}></Login>}></Route>
           <Route path='/home/*' element={
             <RutasProtegidas>
-              <RutasAdministrador></RutasAdministrador>
+              <RutasAdministrador logout={logout} ></RutasAdministrador>
             </RutasProtegidas>
           }></Route>
         </Routes>
