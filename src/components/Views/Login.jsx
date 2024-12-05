@@ -19,7 +19,7 @@ const Login = ({usuarioLogueado, setUsuarioLogueado}) => {
                 console.log(respuesta);
                 setUsuarioLogueado(JSON.stringify(respuesta.datos));
                 Swal.fire('Bienvenido',':)','success');
-                navigate('/home'); //Aqui debe ir /home
+                navigate('/home/'); //Aqui debe ir /home
             }else
             {
                 Swal.fire('Error', 'Email o password incorrectos.', 'error');
