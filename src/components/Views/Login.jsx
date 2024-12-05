@@ -1,14 +1,31 @@
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { Form, Button, Card, Navbar } from 'react-bootstrap';
-import logoNavCardLogin from '../../assets/img/header-responsive-SM.png'
+import logoNavCardLogin from '../../assets/img/header-responsive-SM.png';
+import { login } from '../helpers/queries';
+import Swal from 'sweetalert2';
 
-const Login = (usuarioLogueado, setUsuarioLogueado) => {
+const Login = ({usuarioLogueado, setUsuarioLogueado}) => {
     const {register, handleSubmit, formState:{errors}, reset} = useForm();
     const navigate = useNavigate();
 
     const onSubmit = (usuario) => {
-        console.log('hola');
+        login(usuario).then(respuesta =>
+        {
+            if(respuesta.status === 200)
+            {
+                delete respuesta.status;
+                sessionStorage.setItem('user', JSON.stringify(respuesta.datos));
+                console.log(respuesta);
+                setUsuarioLogueado(JSON.stringify(respuesta.datos));
+                Swal.fire('Bienvenido',':)','success');
+                navigate('/'); //Aqui debe ir /home
+            }else
+            {
+                Swal.fire('Error', 'Email o password incorrectos.', 'error');
+            }
+        }
+        )
     }
     
     return (
