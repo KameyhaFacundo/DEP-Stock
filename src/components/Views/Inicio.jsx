@@ -1,8 +1,13 @@
 import React from 'react';
+import MenuInicio from './MenuInicio/MenuInicio';
 
-const Inicio = () => {
+const Inicio = ({logout}) => {
     return (
-        <h1>Bienvenido a la pagina principal :)</h1>
+        <div className='mainSection'>
+            <MenuInicio logout={logout}/>
+            <h1>Bienvenido a la pagina prncipal :)</h1>
+        </div>
+        
     );
 };
 
