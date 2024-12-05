@@ -6,7 +6,7 @@ const RutasAdministrador = () => {
     return (
         <Routes>
             <Route 
-            exact path='/home'
+            exact path='/'
             element={<Inicio></Inicio>}></Route>
         </Routes>
     );
