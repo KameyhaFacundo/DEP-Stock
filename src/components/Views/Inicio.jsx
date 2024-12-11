@@ -5,7 +5,7 @@ const Inicio = ({logout}) => {
     return (
         <div className='mainSection'>
             <MenuInicio logout={logout}/>
-            <h1>Bienvenido a la pagina prncipal :)</h1>
+            <h1>Bienvenido a la pagina prncipal :</h1>
         </div>
         
     );
