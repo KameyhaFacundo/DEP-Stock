@@ -2,6 +2,7 @@
 
 //Por lo pronto defino funciones con controles hardcodeado 
 export const login = async (user) => {
+    /*
     try {
         const response = await fetch(
           "http://localhost/archivos/depStock/loginReact.php",
@@ -30,8 +31,7 @@ export const login = async (user) => {
         }
       } catch (err) {
         setError("Error al conectar con el servidor.");
-      }
-     /*
+      }*/
     try
     {
         console.log(user);
@@ -52,5 +52,5 @@ export const login = async (user) => {
     {
         console.log('A ocurrido un error: '+error);
         return null;
-    }*/
+    }
 }
