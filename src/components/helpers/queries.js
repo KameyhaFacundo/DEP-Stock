@@ -2,6 +2,36 @@
 
 //Por lo pronto defino funciones con controles hardcodeado 
 export const login = async (user) => {
+    try {
+        const response = await fetch(
+          "http://localhost/archivos/depStock/loginReact.php",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: usuario.nombreUsuario,
+              password: usuario.contrasenia,
+            }),
+          }
+        );
+  
+        const data = await response.json();
+  
+        if (data.success) {
+          sessionStorage.setItem("user", JSON.stringify(data.usuario));
+          sessionStorage.setItem("idusuario", data.idusuario);
+          setUsuarioLogueado(data.usuario);
+          setSuccessMessage("Inicio de sesión exitoso. Redirigiendo...");
+          setTimeout(() => navigate("/login"), 2000);
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError("Error al conectar con el servidor.");
+      }
+     /*
     try
     {
         console.log(user);
@@ -22,5 +52,5 @@ export const login = async (user) => {
     {
         console.log('A ocurrido un error: '+error);
         return null;
-    }
+    }*/
 }
