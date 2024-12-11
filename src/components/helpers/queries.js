@@ -1,37 +1,35 @@
 //Aqui se importaran las url que se ingresan en el archivo .env para comuinicarse con el back
 
-//Por lo pronto defino funciones con controles hardcodeado 
+//Por lo pronto defino funciones con controles hardcodeado
 export const login = async (user) => {
-    try {
-        const response = await fetch(
-          "http://localhost/archivos/depStock/loginReact.php",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username: usuario.nombreUsuario,
-              password: usuario.contrasenia,
-            }),
-          }
-        );
-  
-        const data = await response.json();
-  
-        if (data.success) {
-          sessionStorage.setItem("user", JSON.stringify(data.usuario));
-          sessionStorage.setItem("idusuario", data.idusuario);
-          setUsuarioLogueado(data.usuario);
-          setSuccessMessage("Inicio de sesión exitoso. Redirigiendo...");
-          setTimeout(() => navigate("/login"), 2000);
-        } else {
-          setError(data.message);
-        }
-      } catch (err) {
-        setError("Error al conectar con el servidor.");
+  try {
+    const response = await fetch(
+      "http://localhost/archivos/depStock/loginReact.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user.nombreUsuario,
+          password: user.contrasenia,
+        }),
       }
-     /*
+    );
+
+    if (!response.ok) {
+      return { status: response.status, datos: null };
+    }
+
+    const data = await response.json();
+    return { status: 200, datos: data };
+  } catch (err) {
+    console.error(err);
+    return { status: 500, datos: null };
+  }
+};
+
+/*
     try
     {
         console.log(user);
@@ -53,4 +51,4 @@ export const login = async (user) => {
         console.log('A ocurrido un error: '+error);
         return null;
     }*/
-}
+// };
