@@ -1,9 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react';
+import MenuInicio from '../MenuInicio/MenuInicio';
 
-export default class productos extends Component {
-  render() {
-    return (
-      <section><h2>ola</h2></section>
-    )
-  }
-}
+const Productos = ({logout}) => {
+  return (
+    <div>
+      <div className='mainSection'>
+            <MenuInicio logout={{logout}}></MenuInicio>
+            <h1>Hola</h1>
+        </div>
+    </div>
+  );
+};
+
+export default Productos;
