@@ -8,6 +8,11 @@ const RutasAdministrador = ({logout}) => {
             <Route 
             exact path='/'
             element={<Inicio logout={logout}></Inicio>}></Route>
+            
+            {/* Para Productos */}
+            <Route
+            exact path='/Productos'
+            element={<Inicio logout={logout}></Inicio>}></Route>
         </Routes>
     );
 };
