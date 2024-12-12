@@ -22,7 +22,7 @@
 }
 
 .movimientos-header button {
-  background-color: #007bff;
+  background-color: #404041;
   color: white;
   font-size: 1rem;
   font-weight: bold;
@@ -34,9 +34,12 @@
 }
 
 .movimientos-header button:hover {
-  background-color: #0056b3;
+  background-color: #1a1b1d;
 }
-
+.movimientos-header button:active {
+  background-color: #1a1b1d;
+  background: none;
+}
 .movimientos-table {
   width: 100%;
   border-collapse: collapse;
@@ -105,14 +108,14 @@
 }
 
 button {
-  padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
   border-radius: 5px;
 }
 
 button[type="submit"] {
-  background-color: #007bff;
-  color: white;
+  background-color: #4d84c2;
+  color: rgb(12, 11, 11);
   border: none;
 }
 
