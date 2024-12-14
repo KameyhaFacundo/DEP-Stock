@@ -13,6 +13,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .movimientos-header h2 {
@@ -36,10 +37,11 @@
 .movimientos-header button:hover {
   background-color: #1a1b1d;
 }
+
 .movimientos-header button:active {
   background-color: #1a1b1d;
-  background: none;
 }
+
 .movimientos-table {
   width: 100%;
   border-collapse: collapse;
@@ -47,6 +49,8 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: block;
+  overflow-x: auto;
 }
 
 .movimientos-table th,
@@ -198,4 +202,59 @@ h2 {
 .pagination span {
   margin: 0 10px;
   font-size: 1rem;
+}
+
+/* Pantallas pequeñas */
+
+@media (max-width: 768px) {
+  .movimientos-table {
+    width: 100%;
+    display: block;
+  }
+
+  .movimientos-table thead {
+    display: none;
+  }
+
+  .movimientos-table tbody {
+    display: block;
+  }
+
+  .movimientos-table tr {
+    display: block;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .movimientos-table td {
+    display: block;
+    text-align: left;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    position: relative;
+    border: none;
+    margin-bottom: 1rem;
+  }
+
+  /* Cada celda */
+  .movimientos-table td:before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .movimientos-table .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+
+  .movimientos-table .btn {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
 }
