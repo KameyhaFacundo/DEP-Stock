@@ -3,6 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button } from "react-bootstrap";
 import "font-awesome/css/font-awesome.min.css";
 import "./Movimiento.css";
+import {
+  fetchInitialData,
+  fetchMovimientos,
+  saveMovimiento,
+} from "../../helpers/movimiento.js";
 
 function Movimiento() {
   const [data, setData] = useState({
@@ -21,27 +26,23 @@ function Movimiento() {
     Unidad: "",
     Motivo: "",
   });
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(""); // SACAR DESPUES
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(10);
+  const [rowsPerPage] = useState(10); // Numero de pagina a mostrar
 
   useEffect(() => {
-    fetch("http://localhost/archivos/depStock/movimiento.php")
-      .then((response) => response.json())
-      .then((data) =>
-        setData({
-          articulos: data.articulos || [],
-          centros: data.centros || [],
-          acciones: data.acciones || [],
-        })
-      )
-      .catch((error) => console.error("Error:", error));
-
-    fetch("http://localhost/archivos/depStock/obtenerMovimientos.php")
-      .then((response) => response.json())
-      .then((data) => setMovimientos(data.movimientos || []))
-      .catch((error) => console.error("Error:", error));
+    const loadData = async () => {
+      try {
+        const initialData = await fetchInitialData();
+        setData(initialData);
+        const movimientosData = await fetchMovimientos();
+        setMovimientos(movimientosData);
+      } catch (error) {
+        console.error("Error al cargar los datos:", error);
+      }
+    };
+    loadData();
   }, []);
 
   const handleInputChange = (e) => {
@@ -49,7 +50,6 @@ function Movimiento() {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Función para resetear el formulario
   const resetForm = () => {
     setFormData({
       FechaMov: "",
@@ -63,7 +63,7 @@ function Movimiento() {
     setSelectedAccion("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
       ...formData,
@@ -72,28 +72,16 @@ function Movimiento() {
       IdAccion: selectedAccion,
     };
 
-    fetch("http://localhost/archivos/depStock/guardarMovimientos.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // prueba, respuesta del servidor
-        setModalIsOpen(false);
-        resetForm(); // Resetear el formulario al guardar
-        return fetch(
-          "http://localhost/archivos/depStock/obtenerMovimientos.php"
-        );
-      })
-      .then((response) => response.json())
-      .then((data) => setMovimientos(data.movimientos || []))
-      .catch((error) => {
-        console.error("Error:", error);
-        setMessage("Error al guardar el movimiento.");
-      });
+    try {
+      await saveMovimiento(payload);
+      setModalIsOpen(false);
+      resetForm();
+      const updatedMovimientos = await fetchMovimientos();
+      setMovimientos(updatedMovimientos);
+    } catch (error) {
+      console.error("Error al guardar el movimiento:", error);
+      setMessage("Error al guardar el movimiento.");
+    }
   };
 
   const indexOfLastMovement = currentPage * rowsPerPage;
@@ -109,7 +97,6 @@ function Movimiento() {
     <div className="movimientos-container">
       <div>
         <div className="movimientos-header">
-          {" "}
           <h2>Movimientos Registrados</h2>
           <Button
             variant="primary"
