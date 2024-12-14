@@ -4,7 +4,7 @@
 export const login = async (user) => {
   try {
     const response = await fetch(
-      "http://localhost/archivos/depStock/loginReact.php",
+      "http://localhost/archivos/depStock/login.php",
       {
         method: "POST",
         headers: {

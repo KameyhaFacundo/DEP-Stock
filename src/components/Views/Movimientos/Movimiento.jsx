@@ -49,6 +49,20 @@ function Movimiento() {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Función para resetear el formulario
+  const resetForm = () => {
+    setFormData({
+      FechaMov: "",
+      Cantidad: "",
+      DescripUnidad: "",
+      Unidad: "",
+      Motivo: "",
+    });
+    setSelectedArticulo("");
+    setSelectedCentro("");
+    setSelectedAccion("");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const payload = {
@@ -67,7 +81,9 @@ function Movimiento() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data); // prueba, respuesta del servidor
         setModalIsOpen(false);
+        resetForm(); // Resetear el formulario al guardar
         return fetch(
           "http://localhost/archivos/depStock/obtenerMovimientos.php"
         );
@@ -297,7 +313,13 @@ function Movimiento() {
               </label>
             </div>
             <div className="modal-footer">
-              <button type="button" onClick={() => setModalIsOpen(false)}>
+              <button
+                type="button"
+                onClick={() => {
+                  setModalIsOpen(false);
+                  resetForm();
+                }}
+              >
                 Cancelar
               </button>
               <button type="submit">Guardar</button>
