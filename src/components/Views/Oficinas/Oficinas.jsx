@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MenuInicio from '../MenuInicio/MenuInicio';
 import { Container, Table } from 'react-bootstrap';
 import ItemOficina from './ItemOficina';
+import { fetchCentros } from '../../helpers/oficinas';
 
 const Oficinas = ({logout}) => {
+    const [data, setData]=useState({
+        centros:[]
+    });
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const oficinas = await fetchCentros(); // Espera a que se resuelva la promesa
+                setData({ centros: oficinas }); // Establece el estado correctamente
+                console.log(data.centros);
+            } catch (error) {
+                console.log("Error al cargar los datos: ", error);
+            }
+        };
+        loadData();
+    }, []);
+
+    console.log(data.centros);
     return (
         <div className='mainSection'>
             <MenuInicio logout={{logout}}></MenuInicio>
@@ -16,14 +35,13 @@ const Oficinas = ({logout}) => {
                         <tr>
                             <th>Id Oficina</th>
                             <th>Nombre</th>
-                            <th>Cantidad personal</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <ItemOficina id={1} nombre={'Computos'} cantPersonal={4}></ItemOficina>
-                        <ItemOficina id={2} nombre={'Geologia'} cantPersonal={7}></ItemOficina>
-                        <ItemOficina id={3} nombre={'Secretaria'} cantPersonal={1}></ItemOficina>
+                        {data.centros.map((centro) => (
+                            <ItemOficina id={centro.IdCentro} nombre={centro.Centro}></ItemOficina>
+                        ))}
                     </tbody>
                 </Table>
             </Container>
