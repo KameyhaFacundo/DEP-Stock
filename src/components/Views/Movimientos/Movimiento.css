@@ -56,8 +56,15 @@
 .movimientos-table th,
 .movimientos-table td {
   text-align: center;
-  padding: 20px;
+  padding: 5px;
   border: 1px solid #ddd;
+}
+
+@media (min-width: 1120px) {
+  .movimientos-table th,
+  .movimientos-table td {
+    padding: 20px;
+  }
 }
 
 .movimientos-table th {
