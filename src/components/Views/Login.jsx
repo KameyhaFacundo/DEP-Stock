@@ -12,7 +12,7 @@ const Login = ({setUsuarioLogueado}) => {
     const onSubmit = (usuario) => {
         login(usuario).then(respuesta =>
         {
-            if(respuesta.status === 200)
+            if(respuesta && respuesta.status === 200)
             {
                 delete respuesta.status;
                 sessionStorage.setItem('user', JSON.stringify(respuesta.datos));
