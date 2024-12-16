@@ -4,15 +4,15 @@
 export const login = async (user) => {
     try {
         const response = await fetch(
-          "http://localhost/archivos/depStock/login.php",
+          "http://localhost/archivos/depStock/loginReact.php",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              username: user.nombreUsuario,
-              password: user.contrasenia,
+              username: usuario.nombreUsuario,
+              password: usuario.contrasenia,
             }),
           }
         );
@@ -28,8 +28,7 @@ export const login = async (user) => {
         } else {
           setError(data.message);
         }
-      } catch (err) {
-        console.log(err)
+      } catch (err) { 
         setError("Error al conectar con el servidor.");
       }
      /*
