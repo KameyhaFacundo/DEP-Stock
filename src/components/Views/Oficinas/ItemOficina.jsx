@@ -1,17 +1,15 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
-const ItemOficina = ({id, nombre, cantPersonal}) => {
+const ItemOficina = ({id, nombre}) => {
     return (
         <tr>
             <td>{id}</td>
             <td>{nombre}</td>
-            <td>{cantPersonal}</td>
             <td>
                 <Container>
                     <Row>
-                        <Col><Button>Opcion 1</Button></Col>
-                        <Col><Button>Opcion 2</Button></Col>
+                        <Col><Button>Movimientos</Button></Col>
                     </Row>
                 </Container>
             </td>
