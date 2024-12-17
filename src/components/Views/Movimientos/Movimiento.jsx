@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Modal, Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
+import ModalMovimiento from "./ModalMovimiento";
 import "font-awesome/css/font-awesome.min.css";
 import "./Movimiento.css";
 import {
   fetchInitialData,
   fetchMovimientos,
   saveMovimiento,
+  deleteMovimiento,
+  updateMovimiento,
 } from "../../helpers/movimiento.js";
 
 function Movimiento() {
@@ -26,10 +29,13 @@ function Movimiento() {
     Unidad: "",
     Motivo: "",
   });
-  const [message, setMessage] = useState(""); // SACAR DESPUES
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(10); // Numero de pagina a mostrar
+  const rowsPerPage = 10;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingMovimiento, setEditingMovimiento] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -70,18 +76,62 @@ function Movimiento() {
       IdConcepto: selectedArticulo,
       IdCentro: selectedCentro,
       IdAccion: selectedAccion,
+      IdMovimiento: isEditing ? editingMovimiento.IdMovimiento : null,
     };
 
     try {
-      await saveMovimiento(payload);
+      if (isEditing) {
+        await updateMovimiento(payload);
+      } else {
+        await saveMovimiento(payload);
+      }
       setModalIsOpen(false);
       resetForm();
       const updatedMovimientos = await fetchMovimientos();
       setMovimientos(updatedMovimientos);
+      setIsEditing(false);
+      setEditingMovimiento(null);
     } catch (error) {
-      console.error("Error al guardar el movimiento:", error);
-      setMessage("Error al guardar el movimiento.");
+      console.error("Error al guardar o actualizar el movimiento:", error);
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const payload = { IdMovimiento: selectedIdToDelete };
+      const result = await deleteMovimiento(payload);
+      if (result.message === "Movimiento eliminado correctamente.") {
+        setMovimientos(
+          movimientos.filter(
+            (movimiento) => movimiento.IdMovimiento !== selectedIdToDelete
+          )
+        );
+      }
+      setShowDeleteConfirmModal(false);
+    } catch (error) {
+      console.error("Error al eliminar el movimiento:", error);
+    }
+  };
+
+  const handleEditClick = (movimiento) => {
+    setIsEditing(true);
+    setEditingMovimiento(movimiento);
+    setSelectedArticulo(movimiento.IdConcepto);
+    setSelectedCentro(movimiento.IdCentro);
+    setSelectedAccion(movimiento.IdAccion);
+    setFormData({
+      FechaMov: movimiento.FechaMov,
+      Cantidad: movimiento.Cantidad,
+      DescripUnidad: movimiento.DescripUnidad,
+      Unidad: movimiento.Unidad,
+      Motivo: movimiento.Motivo,
+    });
+    setModalIsOpen(true);
+  };
+
+  const handleDeleteClick = (idMovimiento) => {
+    setSelectedIdToDelete(idMovimiento);
+    setShowDeleteConfirmModal(true);
   };
 
   const indexOfLastMovement = currentPage * rowsPerPage;
@@ -97,222 +147,137 @@ function Movimiento() {
     <div className="movimientos-container">
       <div>
         <div className="movimientos-header">
-          <h2>Movimientos Registrados</h2>
+          {movimientos.length > 0 && <h2>Movimientos Registrados</h2>}
+
           <Button
             variant="primary"
-            onClick={() => setModalIsOpen(true)}
+            onClick={() => {
+              setModalIsOpen(true);
+              setIsEditing(false);
+              resetForm();
+            }}
             className="add-movement-btn"
           >
             Agregar Movimiento
           </Button>
         </div>
 
-        <table className="movimientos-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th className="px-5">Fecha</th>
-              <th>Artículo</th>
-              <th>Centro</th>
-              <th>Acción</th>
-              <th>Cantidad</th>
-              <th>Unidad</th>
-              <th className="px-1">Descrip Unidad</th>
-              <th>Motivo</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentMovements.length > 0 ? (
-              currentMovements.map((movimiento, index) => (
-                <tr key={index}>
-                  <td data-label="Código">{movimiento.IdConcepto}</td>
-                  <td data-label="Fecha">{movimiento.FechaMov}</td>
-                  <td data-label="Artículo">{movimiento.Articulo}</td>
-                  <td data-label="Centro">{movimiento.Centro}</td>
-                  <td data-label="Acción">{movimiento.Accion}</td>
-                  <td data-label="Cantidad">{movimiento.Cantidad}</td>
-                  <td data-label="Unidad">{movimiento.Unidad}</td>
-                  <td data-label="Descrip Unidad">
-                    {movimiento.DescripUnidad}
-                  </td>
-                  <td data-label="Motivo">{movimiento.Motivo}</td>
-                  <td className="actions">
-                    <button className="btn btn-link text-primary">
-                      <i className="fas fa-edit"></i>
-                    </button>
-                    <button className="btn btn-link text-danger ml-2">
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </td>
+        {movimientos.length > 0 ? (
+          <>
+            <table className="movimientos-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th className="px-5">Fecha</th>
+                  <th>Artículo</th>
+                  <th>Centro</th>
+                  <th>Acción</th>
+                  <th>Cantidad</th>
+                  <th>Unidad</th>
+                  <th className="px-1">Descrip Unidad</th>
+                  <th>Motivo</th>
+                  <th></th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="9">No hay movimientos registrados.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        <div className="pagination">
-          <Button
-            variant="secondary"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="pagination-btn"
-          >
-            <i className="fa fa-arrow-left"></i>
-          </Button>
-          <span>{currentPage}</span>
-          <Button
-            variant="secondary"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(movimientos.length / rowsPerPage) ||
-              movimientos.length === 0
-            }
-            className="pagination-btn"
-          >
-            <i className="fa fa-arrow-right"></i>
-          </Button>
-        </div>
+              </thead>
+              <tbody>
+                {currentMovements.map((movimiento, index) => (
+                  <tr key={index}>
+                    <td>{movimiento.IdConcepto}</td>
+                    <td>{movimiento.FechaMov}</td>
+                    <td>{movimiento.Articulo}</td>
+                    <td>{movimiento.Centro}</td>
+                    <td>{movimiento.Accion}</td>
+                    <td>{movimiento.Cantidad}</td>
+                    <td>{movimiento.Unidad}</td>
+                    <td>{movimiento.DescripUnidad}</td>
+                    <td>{movimiento.Motivo}</td>
+                    <td>
+                      <button
+                        className="btn btn-link text-primary"
+                        onClick={() => handleEditClick(movimiento)}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button
+                        className="btn btn-link text-danger ml-2"
+                        onClick={() =>
+                          handleDeleteClick(movimiento.IdMovimiento)
+                        }
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <Button
+                variant="secondary"
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="pagination-btn"
+              >
+                <i className="fa fa-arrow-left"></i>
+              </Button>
+              <span>{currentPage}</span>
+              <Button
+                variant="secondary"
+                onClick={() => paginate(currentPage + 1)}
+                disabled={
+                  currentPage === Math.ceil(movimientos.length / rowsPerPage)
+                }
+                className="pagination-btn"
+              >
+                <i className="fa fa-arrow-right"></i>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <p className="text-center">No hay movimientos registrados.</p>
+        )}
 
-        <Modal show={modalIsOpen} onHide={() => setModalIsOpen(false)} centered>
+        <Modal
+          show={showDeleteConfirmModal}
+          onHide={() => setShowDeleteConfirmModal(false)}
+          centered
+        >
           <Modal.Header closeButton>
-            <Modal.Title>Formulario de Movimiento</Modal.Title>
+            <Modal.Title></Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form onSubmit={handleSubmit} className="modal-form">
-              <div className="form-group">
-                <label>
-                  Fecha:
-                  <input
-                    type="date"
-                    name="FechaMov"
-                    value={formData.FechaMov}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-              </div>
-              <div className="form-group">
-                <label>
-                  Acción:
-                  <select
-                    value={selectedAccion}
-                    onChange={(e) => setSelectedAccion(e.target.value)}
-                    required
-                  >
-                    <option value="">Seleccione una acción</option>
-                    {data.acciones.map((accion) => (
-                      <option key={accion.IdAccion} value={accion.IdAccion}>
-                        {accion.Accion}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="form-group">
-                <label>
-                  Artículo:
-                  <select
-                    value={selectedArticulo}
-                    onChange={(e) => setSelectedArticulo(e.target.value)}
-                    required
-                  >
-                    <option value="">Seleccione un artículo</option>
-                    {data.articulos.map((articulo) => (
-                      <option
-                        key={articulo.IdConcepto}
-                        value={articulo.IdConcepto}
-                      >
-                        {articulo.Articulo}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="form-group">
-                <label>
-                  Centro:
-                  <select
-                    value={selectedCentro}
-                    onChange={(e) => setSelectedCentro(e.target.value)}
-                    required
-                  >
-                    <option value="">Seleccione un centro</option>
-                    {data.centros.map((centro) => (
-                      <option key={centro.IdCentro} value={centro.IdCentro}>
-                        {centro.Centro}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="form-group">
-                <label>
-                  Cantidad:
-                  <input
-                    type="number"
-                    name="Cantidad"
-                    value={formData.Cantidad}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-              </div>
-              <div className="form-group">
-                <label>
-                  Motivo:
-                  <textarea
-                    name="Motivo"
-                    value={formData.Motivo}
-                    onChange={handleInputChange}
-                    required
-                  ></textarea>
-                </label>
-              </div>
-
-              <div className="form-group double">
-                <label>
-                  Unidad:
-                  <input
-                    type="text"
-                    name="Unidad"
-                    value={formData.Unidad}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-              </div>
-              <div className="form-group double">
-                <label>
-                  Descripción:
-                  <input
-                    type="text"
-                    name="DescripUnidad"
-                    value={formData.DescripUnidad}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setModalIsOpen(false);
-                    resetForm();
-                  }}
-                >
-                  Cancelar
-                </button>
-                <button type="submit">Guardar</button>
-              </div>
-            </form>
+            <p className="text-center">
+              ¿Estás seguro de que deseas eliminar este movimiento?
+            </p>
           </Modal.Body>
+          <Modal.Footer className="mx-5">
+            <Button
+              className="mx-5"
+              variant="secondary"
+              onClick={() => setShowDeleteConfirmModal(false)}
+            >
+              Cancelar
+            </Button>
+            <Button className="mx-5" variant="danger" onClick={handleDelete}>
+              Eliminar
+            </Button>
+          </Modal.Footer>
         </Modal>
-        {message && <p>{message}</p>}
+
+        <ModalMovimiento
+          showModal={modalIsOpen}
+          onClose={() => setModalIsOpen(false)}
+          onSubmit={handleSubmit}
+          formData={formData}
+          handleInputChange={handleInputChange}
+          data={data}
+          selectedArticulo={selectedArticulo}
+          selectedCentro={selectedCentro}
+          selectedAccion={selectedAccion}
+          setSelectedArticulo={setSelectedArticulo}
+          setSelectedCentro={setSelectedCentro}
+          setSelectedAccion={setSelectedAccion}
+        />
       </div>
     </div>
   );

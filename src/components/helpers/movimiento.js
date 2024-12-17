@@ -42,3 +42,39 @@ export const saveMovimiento = async (payload) => {
     throw error;
   }
 };
+
+export const deleteMovimiento = async (payload) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/eliminarMovimiento.php`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error al eliminar movimiento:", error);
+    throw error;
+  }
+};
+
+export const updateMovimiento = async (payload) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/actualizarMovimiento.php`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error al actualizar movimiento:", error);
+    throw error;
+  }
+};
