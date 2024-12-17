@@ -1,31 +1,37 @@
 //Aqui se importaran las url que se ingresan en el archivo .env para comuinicarse con el back
 
-//Por lo pronto defino funciones con controles hardcodeado
 export const login = async (user) => {
   try {
     const response = await fetch(
-      "http://localhost/archivos/depStock/loginReact.php",
+      "http://localhost/archivos/depStock/login.php",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: user.nombreUsuario,
-          password: user.contrasenia,
+          username: user.nombreUsuario, // Enviar el nombre de usuario ingresado
+          password: user.contrasenia, // Enviar la contraseña ingresada
         }),
       }
     );
 
+    // Si la respuesta no es OK (por ejemplo, código 404 o 500)
     if (!response.ok) {
-      return { status: response.status, datos: null };
+      return { status: response.status, datos: null }; // Retorna el código de error
     }
 
+    // Convertimos la respuesta a JSON
     const data = await response.json();
-    return { status: 200, datos: data };
+
+    // Validamos el contenido del JSON antes de proceder
+    if (data.success) {
+      return { status: 200, datos: data }; // Retorna los datos de éxito
+    } else {
+      return { status: 401, datos: null, message: data.message }; // Usuario o contraseña incorrectos
+    }
   } catch (err) {
-    console.error(err);
-    return { status: 500, datos: null };
+    return { status: 500, datos: null }; // Error del servidor
   }
 };
 

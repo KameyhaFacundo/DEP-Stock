@@ -19,7 +19,7 @@ const Login = ({ setUsuarioLogueado }) => {
       if (respuesta.status === 200 && respuesta.datos) {
         sessionStorage.setItem("user", JSON.stringify(respuesta.datos));
         setUsuarioLogueado(respuesta.datos);
-        Swal.fire("Bienvenido", ":)", "success");
+        // Swal.fire("Bienvenido", ":)", "success");
         navigate("/home/");
       } else if (respuesta.status === 401) {
         Swal.fire("Error", "Email o password incorrectos.", "error");
