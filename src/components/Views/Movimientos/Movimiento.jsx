@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import ModalMovimiento from "./ModalMovimiento";
 import "font-awesome/css/font-awesome.min.css";
 import "./Movimiento.css";
@@ -8,6 +8,7 @@ import {
   fetchInitialData,
   fetchMovimientos,
   saveMovimiento,
+  deleteMovimiento, // Importa la función de eliminación
 } from "../../helpers/movimiento.js";
 
 function Movimiento() {
@@ -29,6 +30,8 @@ function Movimiento() {
   });
   const [message, setMessage] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10; // Número de filas por página
 
@@ -79,10 +82,34 @@ function Movimiento() {
       resetForm();
       const updatedMovimientos = await fetchMovimientos();
       setMovimientos(updatedMovimientos);
-      console.error("Movimiento guardado:", error);
     } catch (error) {
       console.error("Error al guardar el movimiento:", error);
     }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const payload = { IdMovimiento: selectedIdToDelete };
+      const result = await deleteMovimiento(payload);
+      if (result.message === "Movimiento eliminado correctamente.") {
+        setMovimientos(
+          movimientos.filter(
+            (movimiento) => movimiento.IdMovimiento !== selectedIdToDelete
+          )
+        );
+        console.log("Movimiento eliminado", result);
+      } else {
+        console.log("Error al eliminar el movimiento:", result.message);
+      }
+      setShowDeleteConfirmModal(false); // Cerrar modal de confirmación
+    } catch (error) {
+      console.error("Error al eliminar el movimiento", error);
+    }
+  };
+
+  const handleDeleteClick = (idMovimiento) => {
+    setSelectedIdToDelete(idMovimiento); // Guardar el Id del movimiento a eliminar
+    setShowDeleteConfirmModal(true); // Mostrar el modal de confirmación
   };
 
   const indexOfLastMovement = currentPage * rowsPerPage;
@@ -142,7 +169,10 @@ function Movimiento() {
                     <button className="btn btn-link text-primary">
                       <i className="fas fa-edit"></i>
                     </button>
-                    <button className="btn btn-link text-danger ml-2">
+                    <button
+                      className="btn btn-link text-danger ml-2"
+                      onClick={() => handleDeleteClick(movimiento.IdMovimiento)}
+                    >
                       <i className="fas fa-trash"></i>
                     </button>
                   </td>
@@ -155,6 +185,31 @@ function Movimiento() {
             )}
           </tbody>
         </table>
+
+        <Modal
+          show={showDeleteConfirmModal}
+          onHide={() => setShowDeleteConfirmModal(false)}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Confirmación de eliminación</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>¿Estás seguro de que deseas eliminar este movimiento?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setShowDeleteConfirmModal(false)}
+            >
+              Cancelar
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              Eliminar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <div className="pagination">
           <Button
             variant="secondary"
