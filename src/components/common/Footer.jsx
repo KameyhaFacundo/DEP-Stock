@@ -9,21 +9,25 @@ import imgIdet from "../../assets/sitiosImg/idet.png";
 import imgOdsFranja from "../../assets/sitiosImg/odsFranja.png";
 
 const Footer = () => {
+  const handleImageError = (event) => {
+    event.target.src = require("../../assets/img/picture.svg");
+  };
+
   return (
-    //Sitios de interes
     <footer className="bg-dark text-light pt-3">
       <Container fluid className="w-100">
-        <h1 class="text-center val-round">Sitios web de interés</h1>
+        <h1 className="text-center val-round">Sitios web de interés</h1>
         <Row className="align-items-center">
           <aside className="col-sm-12 col-md-6 col-lg-3 text-center">
             <a
               className=""
               href="http://estadistica.tucuman.gov.ar/"
               target="_blank"
+              rel="noopener noreferrer"
             >
               <img
                 className="img-interes"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgDefecto}
                 alt="estadistica"
               />
@@ -35,10 +39,11 @@ const Footer = () => {
               className=""
               href="http://planeamiento.tucuman.gob.ar/"
               target="_blank"
+              rel="noopener noreferrer"
             >
               <img
                 className="img-interes"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgDefecto}
                 alt="planeamiento"
               />
@@ -50,10 +55,11 @@ const Footer = () => {
               className=""
               href="https://correorig.tucuman.gob.ar/"
               target="_blank"
+              rel="noopener noreferrer"
             >
               <img
                 className="img-interes"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgRIG}
                 alt="rig"
               />
@@ -61,10 +67,15 @@ const Footer = () => {
           </aside>
 
           <aside className="col-sm-12 col-md-6 col-lg-3 text-center mt-1">
-            <a className="" href="https://sep.tucuman.gob.ar/" target="_blank">
+            <a
+              className=""
+              href="https://sep.tucuman.gob.ar/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="img-interes"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgDefecto}
                 alt="sep"
               />
@@ -73,10 +84,15 @@ const Footer = () => {
         </Row>
         <Row className="pt-2 align-items-center">
           <aside className="col-sm-12 col-md-6 col-lg-3 text-center mt-1">
-            <a className="" href="https://www.indec.gob.ar/" target="_blank">
+            <a
+              className=""
+              href="https://www.indec.gob.ar/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="img-interes"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgIndec}
                 alt="indec"
               />
@@ -84,10 +100,15 @@ const Footer = () => {
           </aside>
 
           <aside className="col-sm-12 col-md-6 col-lg-3 text-center mt-1">
-            <a className="" href="https://digituc.gob.ar/" target="_blank">
+            <a
+              className=""
+              href="https://digituc.gob.ar/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="img-interes"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgDigituc}
                 alt="digituc"
               />
@@ -95,10 +116,15 @@ const Footer = () => {
           </aside>
 
           <aside className="col-sm-12 col-md-6 col-lg-3 text-center">
-            <a className="" href="http://idet.tucuman.gob.ar/" target="_blank">
+            <a
+              className=""
+              href="http://idet.tucuman.gob.ar/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 className="img-interes bg-dark"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgIdet}
                 alt="idet"
               />
@@ -110,10 +136,11 @@ const Footer = () => {
               className=""
               href="https://www.un.org/sustainabledevelopment/es/"
               target="_blank"
+              rel="noopener noreferrer"
             >
               <img
                 className="img-interes"
-                onerror="this.onerror=null;this.src=`assets/img/picture.svg`"
+                onError={handleImageError}
                 src={imgOdsFranja}
                 alt="ods Franja"
               />
@@ -122,16 +149,6 @@ const Footer = () => {
         </Row>
       </Container>
     </footer>
-    /*<div className='bg-footer pt-2'>
-            <Container fluid>
-                <Row>
-                    <Col>Columna 1</Col>
-                    <Col>Columna 2</Col>
-                    <Col>Columna 3</Col>
-                    <Col>Columna 4</Col>
-                </Row>
-            </Container>
-        </div>*/
   );
 };
 
