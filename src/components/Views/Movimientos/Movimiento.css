@@ -265,3 +265,12 @@ h2 {
     padding: 0.5rem;
   }
 }
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.centered-btn {
+  margin-top: 10px; /* Ajusta según sea necesario */
+}

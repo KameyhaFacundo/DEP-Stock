@@ -29,7 +29,6 @@ function Movimiento() {
     Unidad: "",
     Motivo: "",
   });
-  const [message, setMessage] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
@@ -83,10 +82,8 @@ function Movimiento() {
     try {
       if (isEditing) {
         await updateMovimiento(payload);
-        console.log("Movimiento actualizado correctamente.");
       } else {
         await saveMovimiento(payload);
-        console.log("Movimiento guardado correctamente.");
       }
       setModalIsOpen(false);
       resetForm();
@@ -150,13 +147,14 @@ function Movimiento() {
     <div className="movimientos-container">
       <div>
         <div className="movimientos-header">
-          <h2>Movimientos Registrados</h2>
+          {movimientos.length > 0 && <h2>Movimientos Registrados</h2>}
+
           <Button
             variant="primary"
             onClick={() => {
               setModalIsOpen(true);
-              setIsEditing(false); // Asegura que no esté en modo edición
-              resetForm(); // Limpia el formulario
+              setIsEditing(false);
+              resetForm();
             }}
             className="add-movement-btn"
           >
@@ -164,59 +162,80 @@ function Movimiento() {
           </Button>
         </div>
 
-        <table className="movimientos-table">
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th className="px-5">Fecha</th>
-              <th>Artículo</th>
-              <th>Centro</th>
-              <th>Acción</th>
-              <th>Cantidad</th>
-              <th>Unidad</th>
-              <th className="px-1">Descrip Unidad</th>
-              <th>Motivo</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentMovements.length > 0 ? (
-              currentMovements.map((movimiento, index) => (
-                <tr key={index}>
-                  <td data-label="Código">{movimiento.IdConcepto}</td>
-                  <td data-label="Fecha">{movimiento.FechaMov}</td>
-                  <td data-label="Artículo">{movimiento.Articulo}</td>
-                  <td data-label="Centro">{movimiento.Centro}</td>
-                  <td data-label="Acción">{movimiento.Accion}</td>
-                  <td data-label="Cantidad">{movimiento.Cantidad}</td>
-                  <td data-label="Unidad">{movimiento.Unidad}</td>
-                  <td data-label="Descrip Unidad">
-                    {movimiento.DescripUnidad}
-                  </td>
-                  <td data-label="Motivo">{movimiento.Motivo}</td>
-                  <td className="actions">
-                    <button
-                      className="btn btn-link text-primary"
-                      onClick={() => handleEditClick(movimiento)}
-                    >
-                      <i className="fas fa-edit"></i>
-                    </button>
-                    <button
-                      className="btn btn-link text-danger ml-2"
-                      onClick={() => handleDeleteClick(movimiento.IdMovimiento)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </td>
+        {movimientos.length > 0 ? (
+          <>
+            <table className="movimientos-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th className="px-5">Fecha</th>
+                  <th>Artículo</th>
+                  <th>Centro</th>
+                  <th>Acción</th>
+                  <th>Cantidad</th>
+                  <th>Unidad</th>
+                  <th className="px-1">Descrip Unidad</th>
+                  <th>Motivo</th>
+                  <th></th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="10">No hay movimientos registrados.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {currentMovements.map((movimiento, index) => (
+                  <tr key={index}>
+                    <td>{movimiento.IdConcepto}</td>
+                    <td>{movimiento.FechaMov}</td>
+                    <td>{movimiento.Articulo}</td>
+                    <td>{movimiento.Centro}</td>
+                    <td>{movimiento.Accion}</td>
+                    <td>{movimiento.Cantidad}</td>
+                    <td>{movimiento.Unidad}</td>
+                    <td>{movimiento.DescripUnidad}</td>
+                    <td>{movimiento.Motivo}</td>
+                    <td>
+                      <button
+                        className="btn btn-link text-primary"
+                        onClick={() => handleEditClick(movimiento)}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button
+                        className="btn btn-link text-danger ml-2"
+                        onClick={() =>
+                          handleDeleteClick(movimiento.IdMovimiento)
+                        }
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <Button
+                variant="secondary"
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="pagination-btn"
+              >
+                <i className="fa fa-arrow-left"></i>
+              </Button>
+              <span>{currentPage}</span>
+              <Button
+                variant="secondary"
+                onClick={() => paginate(currentPage + 1)}
+                disabled={
+                  currentPage === Math.ceil(movimientos.length / rowsPerPage)
+                }
+                className="pagination-btn"
+              >
+                <i className="fa fa-arrow-right"></i>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <p className="text-center">No hay movimientos registrados.</p>
+        )}
 
         <Modal
           show={showDeleteConfirmModal}
@@ -244,29 +263,6 @@ function Movimiento() {
             </Button>
           </Modal.Footer>
         </Modal>
-
-        <div className="pagination">
-          <Button
-            variant="secondary"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="pagination-btn"
-          >
-            <i className="fa fa-arrow-left"></i>
-          </Button>
-          <span>{currentPage}</span>
-          <Button
-            variant="secondary"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(movimientos.length / rowsPerPage) ||
-              movimientos.length === 0
-            }
-            className="pagination-btn"
-          >
-            <i className="fa fa-arrow-right"></i>
-          </Button>
-        </div>
 
         <ModalMovimiento
           showModal={modalIsOpen}
