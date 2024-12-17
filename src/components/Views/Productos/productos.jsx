@@ -4,16 +4,16 @@ import { Modal, Button } from "react-bootstrap";
 import { Container} from "react-bootstrap";
 import "font-awesome/css/font-awesome.min.css";
 import "./Productos.css";
+import {calcularDisponibles}  from "../../helpers/productos";
 import MenuInicio from '../MenuInicio/MenuInicio';
 
 
 const Productos = ({ logout }) => {
   const [productos, setProductos] = useState([]);
-
   const [movimientos, setMovimientos] = useState([]);
 
-
-  useEffect(() => {
+  //Obtengo los articulos presentes en el stock
+  useEffect(() => { 
     fetch("http://localhost/archivos/depStock/obtenerProductos.php")
       .then((response) => response.json())
       .then((data) => {
@@ -36,25 +36,9 @@ const Productos = ({ logout }) => {
       .catch((error) => console.error("Error:", error));
     }, []);
     
-  const calcularDisponibles = (productos) => { 
-    let disponibles = productos.ExistenciasTotales;
-    movimientos.forEach((movimiento) => { 
-      if (movimiento.IdConcepto === productos.IdConcepto && movimiento.Accion === "Salida") 
-      {
-         disponibles -= movimiento.Cantidad*2 ; 
-         if (disponibles<0) {
-            disponibles=0;
-         }
-      } 
-    }); 
-    return disponibles; 
-  };
-
-    
-    const [message, setMessage] = useState("");
+    //Para mostrar una tabla con paginas de determinada cantidad de filas
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage] = useState(10);
-    
     
     const indexOfLastProduct = currentPage * rowsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - rowsPerPage;
@@ -71,7 +55,8 @@ const Productos = ({ logout }) => {
     <MenuInicio logout={logout}/>
     </div>
 
-    <div className="productos-container">
+    {/* Tabla de productos */}
+    <Container className="productos-container">
       <div className="productos-header">
         <h2>Productos Registrados</h2>
       </div>
@@ -94,7 +79,7 @@ const Productos = ({ logout }) => {
               <td>{productos.Articulo}</td>
               <td>{productos.Rubro}</td>
               <td>{productos.ExistenciasTotales}</td>
-              <td>{calcularDisponibles(productos)}</td>
+              <td>{calcularDisponibles(productos,movimientos)}</td>
                   </tr>
                   ))
                    )  
@@ -128,8 +113,7 @@ const Productos = ({ logout }) => {
         </Button>
       </div>
      
-      {/* {message && <p>{message}</p>} */}
-    </div>
+    </Container>
     </>
   );
 }
