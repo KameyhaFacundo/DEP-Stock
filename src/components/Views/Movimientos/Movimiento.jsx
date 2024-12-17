@@ -8,7 +8,8 @@ import {
   fetchInitialData,
   fetchMovimientos,
   saveMovimiento,
-  deleteMovimiento, // Importa la función de eliminación
+  deleteMovimiento,
+  updateMovimiento,
 } from "../../helpers/movimiento.js";
 
 function Movimiento() {
@@ -33,7 +34,9 @@ function Movimiento() {
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [selectedIdToDelete, setSelectedIdToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10; // Número de filas por página
+  const rowsPerPage = 10;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingMovimiento, setEditingMovimiento] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -74,16 +77,25 @@ function Movimiento() {
       IdConcepto: selectedArticulo,
       IdCentro: selectedCentro,
       IdAccion: selectedAccion,
+      IdMovimiento: isEditing ? editingMovimiento.IdMovimiento : null,
     };
 
     try {
-      await saveMovimiento(payload);
+      if (isEditing) {
+        await updateMovimiento(payload);
+        console.log("Movimiento actualizado correctamente.");
+      } else {
+        await saveMovimiento(payload);
+        console.log("Movimiento guardado correctamente.");
+      }
       setModalIsOpen(false);
       resetForm();
       const updatedMovimientos = await fetchMovimientos();
       setMovimientos(updatedMovimientos);
+      setIsEditing(false);
+      setEditingMovimiento(null);
     } catch (error) {
-      console.error("Error al guardar el movimiento:", error);
+      console.error("Error al guardar o actualizar el movimiento:", error);
     }
   };
 
@@ -97,19 +109,32 @@ function Movimiento() {
             (movimiento) => movimiento.IdMovimiento !== selectedIdToDelete
           )
         );
-        console.log("Movimiento eliminado", result);
-      } else {
-        console.log("Error al eliminar el movimiento:", result.message);
       }
-      setShowDeleteConfirmModal(false); // Cerrar modal de confirmación
+      setShowDeleteConfirmModal(false);
     } catch (error) {
-      console.error("Error al eliminar el movimiento", error);
+      console.error("Error al eliminar el movimiento:", error);
     }
   };
 
+  const handleEditClick = (movimiento) => {
+    setIsEditing(true);
+    setEditingMovimiento(movimiento);
+    setSelectedArticulo(movimiento.IdConcepto);
+    setSelectedCentro(movimiento.IdCentro);
+    setSelectedAccion(movimiento.IdAccion);
+    setFormData({
+      FechaMov: movimiento.FechaMov,
+      Cantidad: movimiento.Cantidad,
+      DescripUnidad: movimiento.DescripUnidad,
+      Unidad: movimiento.Unidad,
+      Motivo: movimiento.Motivo,
+    });
+    setModalIsOpen(true);
+  };
+
   const handleDeleteClick = (idMovimiento) => {
-    setSelectedIdToDelete(idMovimiento); // Guardar el Id del movimiento a eliminar
-    setShowDeleteConfirmModal(true); // Mostrar el modal de confirmación
+    setSelectedIdToDelete(idMovimiento);
+    setShowDeleteConfirmModal(true);
   };
 
   const indexOfLastMovement = currentPage * rowsPerPage;
@@ -128,7 +153,11 @@ function Movimiento() {
           <h2>Movimientos Registrados</h2>
           <Button
             variant="primary"
-            onClick={() => setModalIsOpen(true)}
+            onClick={() => {
+              setModalIsOpen(true);
+              setIsEditing(false); // Asegura que no esté en modo edición
+              resetForm(); // Limpia el formulario
+            }}
             className="add-movement-btn"
           >
             Agregar Movimiento
@@ -166,7 +195,10 @@ function Movimiento() {
                   </td>
                   <td data-label="Motivo">{movimiento.Motivo}</td>
                   <td className="actions">
-                    <button className="btn btn-link text-primary">
+                    <button
+                      className="btn btn-link text-primary"
+                      onClick={() => handleEditClick(movimiento)}
+                    >
                       <i className="fas fa-edit"></i>
                     </button>
                     <button
@@ -192,19 +224,22 @@ function Movimiento() {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>Confirmación de eliminación</Modal.Title>
+            <Modal.Title></Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>¿Estás seguro de que deseas eliminar este movimiento?</p>
+            <p className="text-center">
+              ¿Estás seguro de que deseas eliminar este movimiento?
+            </p>
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer className="mx-5">
             <Button
+              className="mx-5"
               variant="secondary"
               onClick={() => setShowDeleteConfirmModal(false)}
             >
               Cancelar
             </Button>
-            <Button variant="danger" onClick={handleDelete}>
+            <Button className="mx-5" variant="danger" onClick={handleDelete}>
               Eliminar
             </Button>
           </Modal.Footer>
@@ -247,8 +282,6 @@ function Movimiento() {
           setSelectedCentro={setSelectedCentro}
           setSelectedAccion={setSelectedAccion}
         />
-
-        {message && <p className="message-text">{message}</p>}
       </div>
     </div>
   );
