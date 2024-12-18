@@ -15,7 +15,7 @@ const MenuInicio = ({logout}) => {
                 <Nav className="ms-auto">
                     <NavDropdown title="secciones" id="dropdownSecciones">
                         <NavLink end className='nav-item nav-link nav-link' to={'/home/oficinas'}>Oficinas</NavLink>
-                        <NavLink end className='nav-item nav-link nav-link' to={'/home/Productos'}>Productos</NavLink>
+                        <NavLink end className='nav-item nav-link nav-link' to={'/home/Productos'}>Stock</NavLink>
                     </NavDropdown>
                     <Nav.Link href="#miPerfil">
                         <PersonBadgeFill className='me-2' size={30}></PersonBadgeFill>
