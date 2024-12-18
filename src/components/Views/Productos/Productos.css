@@ -1,5 +1,5 @@
 .productos-container {
-  margin: 50px 40px 40 px 40px;
+  margin: 40px 40px;
   padding: 20px;
   max-width: 90%;
   background-color: #f9f9f9;
@@ -13,6 +13,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .productos-header h2 {
@@ -52,7 +53,7 @@
 .productos-table th,
 .productos-table td {
   text-align: center;
-  padding: 10px;
+  padding: 20px;
   border: 1px solid #ddd;
 }
 
@@ -84,6 +85,7 @@
   .form-group.double {
     grid-column: span 2;
   }
+  
 }
 
 .modal-form label {
@@ -131,7 +133,6 @@ button[type="button"] {
 }
 
 .table {
-  font-size: 0.1rem;
   margin-top: 0.4rem;
 }
 
@@ -198,4 +199,19 @@ h2 {
 .pagination span {
   margin: 0 10px;
   font-size: 1rem;
+}
+
+/* Para pantallas chicas */
+@media (max-width: 460px) {
+
+  .productos-container {
+    width: 100%;
+    margin: 0;
+    margin: 0 auto
+  }
+
+  .productos-table{
+    width: 100%
+  }
+  
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button } from "react-bootstrap";
-import { Container} from "react-bootstrap";
+import { Container, Table} from "react-bootstrap";
 import "font-awesome/css/font-awesome.min.css";
 import "./Productos.css";
 import {calcularDisponibles}  from "../../helpers/productos";
@@ -53,50 +53,49 @@ const Productos = ({ logout }) => {
       <>
     <div className='mainSection'>
     <MenuInicio logout={logout}/>
-    </div>
 
     {/* Tabla de productos */}
-    <Container className="productos-container">
+    <div className="productos-container">
       <div className="productos-header">
         <h2>Productos Registrados</h2>
       </div>
 
-      <table className="productos-table">
+      <Table responsive striped hover bordered>
         <thead>
           <tr>
-            <th>Código</th>
-            <th>Artículo</th>
-            <th>Rubro</th>
-            <th>Existencias Totales</th>
-            <th>Existencias Disponibles</th>
+            <th className="p-3">Código</th>
+            <th className="p-3">Artículo</th>
+            <th className="p-3">Rubro</th>
+            <th className="p-3">Existencias Totales</th>
+            <th className="p-3">Existencias Disponibles</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody >
            {currentProduct.length > 0 ? (
-            currentProduct.map((productos, index) => ( 
-              <tr>
-              <td>{productos.IdConcepto}</td>
-              <td>{productos.Articulo}</td>
-              <td>{productos.Rubro}</td>
-              <td>{productos.ExistenciasTotales}</td>
-              <td>{calcularDisponibles(productos,movimientos)}</td>
+             currentProduct.map((productos, index) => ( 
+               <tr>
+              <td className="p-3">{productos.IdConcepto}</td>
+              <td className="p-3">{productos.Articulo}</td>
+              <td className="p-3">{productos.Rubro}</td>
+              <td className="p-3">{productos.ExistenciasTotales}</td>
+              <td className="p-3">{calcularDisponibles(productos,movimientos)}</td>
                   </tr>
                   ))
-                   )  
+                )  
                    : (
-                    <tr>
+                     <tr>
                     <td colSpan="9">No hay productos registrados.</td>
                     </tr>
                     )}  
         </tbody>
-      </table>
+      </Table>
       <div className="pagination">
         <Button
           variant="secondary"
           onClick={() => paginate(currentPage - 1)}
           disabled={currentPage === 1}
           className="pagination-btn"
-        >
+          >
           <i className="fa fa-arrow-left"></i>
         </Button>
         <span>{currentPage}</span>
@@ -108,12 +107,13 @@ const Productos = ({ logout }) => {
             movimientos.length === 0
           }
           className="pagination-btn"
-        >
+          >
           <i className="fa fa-arrow-right"></i>
         </Button>
       </div>
      
-    </Container>
+    </div>
+          </div>
     </>
   );
 }
