@@ -9,12 +9,14 @@ const MenuInicio = ({logout}) => {
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
-            <Navbar.Brand href="#home">DEP-Stock Manager</Navbar.Brand>
+            <Navbar.Brand>
+                <NavLink end className='nav-item nav-link' to={'/home'}> DEP-Stock Manager </NavLink>
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ms-auto">
                     <NavDropdown title="secciones" id="dropdownSecciones">
-                        <NavLink end className='nav-item nav-link nav-link' to={'/home/oficinas'}>Oficinas</NavLink>
+                        <NavLink end className='nav-item nav-link nav-link' to={'/home/oficinas'}>Centro de Costos</NavLink>
                         <NavLink end className='nav-item nav-link nav-link' to={'/home/Productos'}>Stock</NavLink>
                     </NavDropdown>
                     <Nav.Link href="#miPerfil">
