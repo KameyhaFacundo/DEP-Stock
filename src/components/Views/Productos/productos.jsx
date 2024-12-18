@@ -57,7 +57,7 @@ const Productos = ({ logout }) => {
     {/* Tabla de productos */}
     <div className="productos-container">
       <div className="productos-header">
-        <h2>Productos Registrados</h2>
+        <h2>Stock</h2>
       </div>
 
       <Table responsive striped hover bordered>
