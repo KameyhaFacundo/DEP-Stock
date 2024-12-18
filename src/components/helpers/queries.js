@@ -1,37 +1,41 @@
 //Aqui se importaran las url que se ingresan en el archivo .env para comuinicarse con el back
 
-//Por lo pronto defino funciones con controles hardcodeado 
 export const login = async (user) => {
-    /*
-    try {
-        const response = await fetch(
-          "http://localhost/archivos/depStock/login.php",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username: usuario.nombreUsuario,
-              password: usuario.contrasenia,
-            }),
-          }
-        );
-  
-    //     const data = await response.json();
-  
-        if (data.success) {
-          sessionStorage.setItem("user", JSON.stringify(data.usuario));
-          sessionStorage.setItem("idusuario", data.idusuario);
-          setUsuarioLogueado(data.usuario);
-          setSuccessMessage("Inicio de sesión exitoso. Redirigiendo...");
-          setTimeout(() => navigate("/login"), 2000);
-        } else {
-          setError(data.message);
-        }
-      } catch (err) {
-        setError("Error al conectar con el servidor.");
-      }*/
+  try {
+    const response = await fetch(
+      "http://localhost/archivos/depStock/login.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: user.nombreUsuario, // Enviar el nombre de usuario ingresado
+          password: user.contrasenia, // Enviar la contraseña ingresada
+        }),
+      }
+    );
+
+    // Si la respuesta no es OK (por ejemplo, código 404 o 500)
+    if (!response.ok) {
+      return { status: response.status, datos: null }; // Retorna el código de error
+    }
+
+    // Convertimos la respuesta a JSON
+    const data = await response.json();
+
+    // Validamos el contenido del JSON antes de proceder
+    if (data.success) {
+      return { status: 200, datos: data }; // Retorna los datos de éxito
+    } else {
+      return { status: 401, datos: null, message: data.message }; // Usuario o contraseña incorrectos
+    }
+  } catch (err) {
+    return { status: 500, datos: null }; // Error del servidor
+  }
+};
+
+/*
     try
     {
         console.log(user);
@@ -52,5 +56,5 @@ export const login = async (user) => {
     {
         console.log('A ocurrido un error: '+error);
         return null;
-    }
-}
+    }*/
+// };
